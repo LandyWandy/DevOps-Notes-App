@@ -1,20 +1,65 @@
-const pool = require('../db/db'); // assuming you have a db.js file setting up PostgreSQL connection
+const pool = require('../db/db'); 
 
 const tasksController = {
+  // Create a new task
   createTask: async (req, res) => {
-    // logic to create a task
+    const { name, description, status } = req.body;
+    try {
+      const newTask = await pool.query(
+        "INSERT INTO tasks (name, description, status) VALUES ($1, $2, $3) RETURNING *",
+        [name, description, status || 'Pending']
+      );
+      res.json(newTask.rows[0]);
+    } catch (err) {
+      console.error(err.message);
+    }
   },
+
+  // Get all tasks
   getAllTasks: async (req, res) => {
-    // logic to get all tasks
+    try {
+      const allTasks = await pool.query("SELECT * FROM tasks");
+      res.json(allTasks.rows);
+    } catch (err) {
+      console.error(err.message);
+    }
   },
+
+  // Get a specific task by ID
   getTaskById: async (req, res) => {
-    // logic to get a specific task by id
+    const { id } = req.params;
+    try {
+      const task = await pool.query("SELECT * FROM tasks WHERE id = $1", [id]);
+      res.json(task.rows[0]);
+    } catch (err) {
+      console.error(err.message);
+    }
   },
+
+  // Update a task
   updateTask: async (req, res) => {
-    // logic to update a task
+    const { id } = req.params;
+    const { name, description, status } = req.body;
+    try {
+      await pool.query(
+        "UPDATE tasks SET name = $1, description = $2, status = $3 WHERE id = $4",
+        [name, description, status, id]
+      );
+      res.json("Task was updated!");
+    } catch (err) {
+      console.error(err.message);
+    }
   },
+
+  // Delete a task
   deleteTask: async (req, res) => {
-    // logic to delete a task
+    const { id } = req.params;
+    try {
+      await pool.query("DELETE FROM tasks WHERE id = $1", [id]);
+      res.json("Task was deleted!");
+    } catch (err) {
+      console.error(err.message);
+    }
   }
 };
 
