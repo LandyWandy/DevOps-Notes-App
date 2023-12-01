@@ -39,17 +39,18 @@ const tasksController = {
   // Update a task
   updateTask: async (req, res) => {
     const { id } = req.params;
-    const { name, description, status } = req.body;
+    const { status } = req.body;
     try {
-      await pool.query(
-        "UPDATE tasks SET name = $1, description = $2, status = $3 WHERE id = $4",
-        [name, description, status, id]
+      const updatedTask = await pool.query(
+        "UPDATE tasks SET status = $1 WHERE id = $2 RETURNING *",
+        [status, id]
       );
-      res.json("Task was updated!");
+      res.json(updatedTask.rows[0]);
     } catch (err) {
       console.error(err.message);
     }
   },
+  
 
   // Delete a task
   deleteTask: async (req, res) => {
