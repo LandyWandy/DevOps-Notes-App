@@ -1,0 +1,1 @@
+docker run --name tasks-dev-database -v /Users/temporary/Desktop/Projects/DevOps-Notes-App/database:/docker-entrypoint-initdb.d -e POSTGRES_DB=tasks_database -e POSTGRES_USER=task_username -e POSTGRES_PASSWORD=task_password -p 5432:5432 -d postgres

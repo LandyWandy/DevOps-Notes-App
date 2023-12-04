@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: notes-app-backend
+        ports:
+        - containerPort: 5000
+        env:
+        - name: DB_USER
+          value: "task_username"
+        - name: DB_PASSWORD
+          value: "task_password"
+        - name: DB_HOST
+          value: "tasks-dev-database"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_DATABASE
+          value: "tasks_database"

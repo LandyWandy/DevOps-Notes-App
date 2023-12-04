@@ -8,7 +8,7 @@ function App() {
   const addTask = async () => {
     if (newTask.name && newTask.description) {
       try {
-        const response = await fetch('/api/tasks', {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/tasks`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ function App() {
 
   const updateTaskStatus = async (taskId, newStatus) => {
     try {
-      const response = await fetch(`/api/tasks/${taskId}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/tasks/${taskId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ function App() {
   
   const deleteTask = async (taskId) => {
     try {
-      const response = await fetch(`/api/tasks/${taskId}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/tasks/${taskId}`, {
         method: 'DELETE'
       });
       if (response.ok) {
@@ -61,7 +61,7 @@ function App() {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await fetch('/api/tasks');
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/tasks`);
         const data = await response.json();
         setTasks(data);
       } catch (error) {

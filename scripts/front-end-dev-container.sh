@@ -1,0 +1,1 @@
+docker run --name tasks-dev-frontend -d -p 3000:3000 -e REACT_APP_API_URL=http://tasks-dev-backend:5000/api notes-app-frontend
