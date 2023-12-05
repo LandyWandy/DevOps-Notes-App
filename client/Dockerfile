@@ -1,8 +1,10 @@
-# Use an official Node runtime as a parent image
-FROM node:latest
+# Stage 1: Build the React application
 
-# Set the working directory in the container
-WORKDIR /usr/src/app
+# Use an official Node runtime as a parent image
+FROM node:latest as build-stage
+
+# Set the working directory in the builder stage
+WORKDIR /app
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
@@ -16,11 +18,16 @@ COPY . .
 # Build the React app
 RUN npm run build
 
-# Install serve to serve the static files
-RUN npm install -g serve
+# Stage 2: Serve the app using Nginx
 
-# Define environment variable
-ENV PORT 3000
+# Use an official Nginx runtime as a parent image
+FROM nginx:alpine
 
-# Run serve when the container launches
-CMD ["serve", "-s", "build", "-l", "3000"]
+# Copy the build output from the previous stage
+COPY --from=build-stage /app/build /usr/share/nginx/html
+
+# Expose port 80
+EXPOSE 80
+
+# Start Nginx and serve the content
+CMD ["nginx", "-g", "daemon off;"]
