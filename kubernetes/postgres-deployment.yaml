@@ -14,18 +14,43 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: postgres
+        image: landywandy/notes-app-database:latest
         env:
-        - name: POSTGRES_DB
-          value: "tasks_database"
-        - name: POSTGRES_USER
-          value: "task_username"
-        - name: POSTGRES_PASSWORD
-          value: "task_password"
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                name: db-credentials
+                key: DB_DATABASE
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: db-credentials
+                key: DB_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-credentials
+                key: DB_PASSWORD
         volumeMounts:
-        - name: postgres-storage
-          mountPath: /var/lib/postgresql/data
+          - name: postgres-storage
+            mountPath: /var/lib/postgresql/data
+        livenessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - task_username
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - task_username
+          initialDelaySeconds: 5
+          periodSeconds: 10
       volumes:
-      - name: postgres-storage
-        persistentVolumeClaim:
-          claimName: postgres-pvc
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc

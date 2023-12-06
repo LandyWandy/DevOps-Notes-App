@@ -14,17 +14,40 @@ spec:
     spec:
       containers:
       - name: backend
-        image: notes-app-backend
+        image: landywandy/notes-app-backend:latest
         ports:
         - containerPort: 5000
         env:
         - name: DB_USER
-          value: "task_username"
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: DB_USER
         - name: DB_PASSWORD
-          value: "task_password"
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: DB_PASSWORD
         - name: DB_HOST
-          value: "tasks-dev-database"
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: DB_HOST
         - name: DB_PORT
-          value: "5432"
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: DB_PORT
         - name: DB_DATABASE
-          value: "tasks_database"
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: DB_DATABASE
+        livenessProbe:
+          httpGet:
+            path: /health/liveness
+            port: 5000
+        readinessProbe:
+          httpGet:
+            path: /health/readiness
+            port: 5000

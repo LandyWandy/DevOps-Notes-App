@@ -3,6 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: postgres-pvc
 spec:
+  storageClassName: storage-class
   accessModes:
     - ReadWriteOnce
   resources:

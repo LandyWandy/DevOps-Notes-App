@@ -1,5 +1,3 @@
-# Assuming you're using a multi-stage build as discussed before
-
 # Stage 1: Build the React application
 FROM node:latest as build-stage
 
