@@ -1,15 +1,21 @@
-# Stage 1: Build the React application
+# Assuming you're using a multi-stage build as discussed before
 
-# Use an official Node runtime as a parent image
+# Stage 1: Build the React application
 FROM node:latest as build-stage
 
-# Set the working directory in the builder stage
+# Set the working directory
 WORKDIR /app
+
+# Optionally accept environment variables as build arguments
+ARG REACT_APP_API_URL
+
+# Set the environment variable
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install any needed packages
+# Install dependencies
 RUN npm install
 
 # Bundle app source
